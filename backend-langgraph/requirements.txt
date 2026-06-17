@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+langgraph
+langchain-core
+langchain-huggingface
+qdrant-client
+python-dotenv
+pydantic
+pydantic-settings

@@ -1,0 +1,98 @@
+{
+  "project": "Backend LangGraph + FastAPI",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Configuración Base",
+      "description": "Entorno, dependencias y FastAPI base",
+      "tasks": [
+        {
+          "id": "1.1",
+          "description": "Crear la estructura de directorios: /backend-langgraph y subcarpetas (app/api, app/core, app/graph, app/rag).",
+          "completed": true
+        },
+        {
+          "id": "1.2",
+          "description": "Definir dependencias (requirements.txt): fastapi, uvicorn, langgraph, langchain-core, langchain-huggingface, qdrant-client, python-dotenv, pydantic.",
+          "completed": true
+        },
+        {
+          "id": "1.3",
+          "description": "Configurar variables de entorno: Crear .env y app/core/config.py para carga tipada.",
+          "completed": true
+        },
+        {
+          "id": "1.4",
+          "description": "Inicializar FastAPI (app/main.py): Instanciar app, configurar CORS, crear endpoint temporal GET /health.",
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Módulo RAG",
+      "description": "Conexión a base vectorial (Qdrant) y embeddings",
+      "tasks": [
+        {
+          "id": "2.1",
+          "description": "Configurar Embeddings Locales (app/rag/embeddings.py): Instanciar HuggingFaceEmbeddings (ej. all-MiniLM-L6-v2).",
+          "completed": false
+        },
+        {
+          "id": "2.2",
+          "description": "Conectar la Base de Datos Vectorial (app/rag/vectorstore.py): Conectar a la instancia persistente de Qdrant en disco (solo lectura, sin ingestión) y exponer interfaz de búsqueda con retriever.",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Módulo LangGraph",
+      "description": "Estado, nodos y compilación del grafo",
+      "tasks": [
+        {
+          "id": "3.1",
+          "description": "Definir el Estado (app/graph/state.py): Crear TypedDict o clase Pydantic AgentState con question, context, generation, etc.",
+          "completed": false
+        },
+        {
+          "id": "3.2",
+          "description": "Centralizar Prompts (app/core/prompts.py): Definir System Prompts (QA_SYSTEM_PROMPT, GRADER_PROMPT) como constantes.",
+          "completed": false
+        },
+        {
+          "id": "3.3",
+          "description": "Implementar Nodos del Grafo (app/graph/nodes.py): Crear funciones retrieve, grade_documents, generate y fallback.",
+          "completed": false
+        },
+        {
+          "id": "3.4",
+          "description": "Compilar el Grafo (app/graph/agent.py): Instanciar StateGraph, añadir nodos, aristas, punto de entrada y compilar.",
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Integración Final",
+      "description": "API Endpoints",
+      "tasks": [
+        {
+          "id": "4.1",
+          "description": "Crear el Endpoint de Invocación (app/api/routes.py): Definir request/response models y ruta POST /invoke que llame al grafo.",
+          "completed": false
+        },
+        {
+          "id": "4.2",
+          "description": "Conectar el Router (app/main.py): Incluir el router de rutas en la app principal.",
+          "completed": false
+        },
+        {
+          "id": "4.3",
+          "description": "Pruebas End-to-End: Levantar servidor y probar POST /invoke verificando el flujo en consola.",
+          "completed": false
+        }
+      ]
+    }
+  ]
+}
