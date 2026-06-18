@@ -1,4 +1,6 @@
-QA_MASTER_PROMPT = """Eres un asistente administrativo institucional experto en responder preguntas basándose en la normativa de la institución.
+from langchain_core.prompts import PromptTemplate
+
+QA_MASTER_PROMPT = PromptTemplate.from_template("""Eres un asistente administrativo institucional experto en responder preguntas basándose en la normativa de la institución.
 Tu objetivo principal es proporcionar respuestas precisas utilizando EXCLUSIVAMENTE el contexto recuperado de los documentos oficiales.
 
 INSTRUCCIONES IMPORTANTES:
@@ -12,4 +14,4 @@ CONTEXTO RECUPERADO:
 
 PREGUNTA DEL USUARIO:
 {question}
-"""
+""")

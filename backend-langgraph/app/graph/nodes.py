@@ -36,14 +36,20 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     question = state.get("question", "")
     context = state.get("context", "")
     print(f"[DEBUG generate_node] context: {len(context)} chars")
-    prompt = QA_MASTER_PROMPT.format(context=context, question=question)
+    
     try:
         llm = ChatOpenAI(
             model="openai/gpt-4o-mini",
             api_key=settings.openrouter_api_key,
             base_url="https://openrouter.ai/api/v1",
         )
-        response = llm.invoke(prompt)
+        chain = QA_MASTER_PROMPT | llm
+        
+        # Inyección de log de control para verificar el prompt final
+        final_prompt = QA_MASTER_PROMPT.format(context=context, question=question)
+        print(f"[DEBUG generate_node] final_prompt:\n{final_prompt[:500]}...\n[...]")
+        
+        response = chain.invoke({"context": context, "question": question})
         print(f"[DEBUG generate_node] respuesta OK: {len(response.content)} chars")
         return {"generation": response.content}
     except Exception as e:
@@ -58,8 +64,10 @@ def direct_answer_node(state: Dict[str, Any]) -> Dict[str, Any]:
             api_key=settings.openrouter_api_key,
             base_url="https://openrouter.ai/api/v1",
         )
-        prompt = f"Responde de forma amigable y breve al siguiente saludo: {question}"
-        response = llm.invoke(prompt)
+        from langchain_core.prompts import PromptTemplate
+        prompt_template = PromptTemplate.from_template("Responde de forma amigable y breve al siguiente saludo: {question}")
+        chain = prompt_template | llm
+        response = chain.invoke({"question": question})
         return {"generation": response.content}
     except Exception as e:
         print(f"[ERROR direct_answer_node] Fallo al invocar el LLM: {e}")
