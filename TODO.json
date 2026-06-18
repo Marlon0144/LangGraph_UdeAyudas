@@ -80,17 +80,17 @@
         {
           "id": "4.1",
           "description": "Crear el Endpoint de Invocación (app/api/routes.py): Definir request/response models y ruta POST /invoke que llame al grafo.",
-          "completed": false
+          "completed": true
         },
         {
           "id": "4.2",
           "description": "Conectar el Router (app/main.py): Incluir el router de rutas en la app principal.",
-          "completed": false
+          "completed": true
         },
         {
           "id": "4.3",
           "description": "Pruebas End-to-End: Levantar servidor y probar POST /invoke verificando el flujo en consola.",
-          "completed": false
+          "completed": true
         }
       ]
     }
