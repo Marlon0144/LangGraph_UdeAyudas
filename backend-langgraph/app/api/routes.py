@@ -12,6 +12,7 @@ class InvokeResponse(BaseModel):
     generation: str
     router_decision: Optional[str] = None
     is_relevant: Optional[bool] = None
+    context: Optional[str] = None
 
 @router.post("/invoke", response_model=InvokeResponse, tags=["Agent"])
 async def invoke_agent(request: InvokeRequest):
@@ -25,10 +26,18 @@ async def invoke_agent(request: InvokeRequest):
             "router_decision": ""
         })
         
+        generation = result.get("generation", "")
+        context = result.get("context", "")
+        
+        # Modificación temporal/diagnóstico: Prependemos el contexto a la respuesta generada
+        if context:
+            generation = f"**--- CONTEXTO RECUPERADO (MODO DEBUG) ---**\n\n{context}\n\n**--- RESPUESTA DEL ASISTENTE ---**\n\n{generation}"
+        
         return InvokeResponse(
-            generation=result.get("generation", ""),
+            generation=generation,
             router_decision=result.get("router_decision"),
-            is_relevant=result.get("is_relevant")
+            is_relevant=result.get("is_relevant"),
+            context=context
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
