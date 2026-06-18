@@ -53,22 +53,22 @@
         {
           "id": "3.1",
           "description": "Definir el Estado (app/graph/state.py): Crear TypedDict o clase Pydantic AgentState con question, context, generation, etc.",
-          "completed": false
+          "completed": true
         },
         {
           "id": "3.2",
           "description": "Centralizar Prompts (app/core/prompts.py): Definir System Prompts (QA_SYSTEM_PROMPT, GRADER_PROMPT) como constantes.",
-          "completed": false
+          "completed": true
         },
         {
           "id": "3.3",
           "description": "Implementar Nodos del Grafo (app/graph/nodes.py): Crear funciones retrieve, grade_documents, generate y fallback.",
-          "completed": false
+          "completed": true
         },
         {
           "id": "3.4",
           "description": "Compilar el Grafo (app/graph/agent.py): Instanciar StateGraph, añadir nodos, aristas, punto de entrada y compilar.",
-          "completed": false
+          "completed": true
         }
       ]
     },
