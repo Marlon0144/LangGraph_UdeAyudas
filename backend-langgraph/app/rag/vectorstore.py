@@ -19,7 +19,9 @@ def get_retriever():
         embedding=embeddings,
         collection_name="udea_reglamento_pregrado",
         url=settings.qdrant_url,
-        api_key=settings.qdrant_api_key
+        api_key=settings.qdrant_api_key,
+        content_payload_key="text",
+        metadata_payload_key="metadata"
     )
 
     # 3. Retorna un retriever con k=7
