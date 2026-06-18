@@ -17,7 +17,7 @@ def get_retriever():
     # 2. Conecta a Qdrant Cloud usando QdrantVectorStore.from_existing_collection
     vectorstore = QdrantVectorStore.from_existing_collection(
         embedding=embeddings,
-        collection_name=settings.qdrant_collection_name,
+        collection_name="udea_reglamento_pregrado",
         url=settings.qdrant_url,
         api_key=settings.qdrant_api_key
     )
