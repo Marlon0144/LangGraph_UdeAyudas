@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.api.routes import router as api_router
 
 app = FastAPI(
     title="Copiloto Administrativo API",
@@ -16,6 +17,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router, prefix="/api")
 
 @app.get("/health", tags=["Health"])
 async def health_check():

@@ -3,6 +3,7 @@ uvicorn
 langgraph
 langchain-core
 langchain-huggingface
+langchain-openai
 qdrant-client
 python-dotenv
 pydantic
