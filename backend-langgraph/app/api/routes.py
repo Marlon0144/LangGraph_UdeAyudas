@@ -7,6 +7,7 @@ router = APIRouter()
 
 class InvokeRequest(BaseModel):
     question: str
+    debug_mode: bool = False
 
 class InvokeResponse(BaseModel):
     generation: str
@@ -29,8 +30,8 @@ async def invoke_agent(request: InvokeRequest):
         generation = result.get("generation", "")
         context = result.get("context", "")
         
-        # Modificación temporal/diagnóstico: Prependemos el contexto a la respuesta generada
-        if context:
+        # Lógica de intercepción basada en debug_mode
+        if request.debug_mode and context:
             generation = f"**--- CONTEXTO RECUPERADO (MODO DEBUG) ---**\n\n{context}\n\n**--- RESPUESTA DEL ASISTENTE ---**\n\n{generation}"
         
         return InvokeResponse(
