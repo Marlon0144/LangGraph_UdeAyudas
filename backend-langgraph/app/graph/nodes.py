@@ -40,7 +40,7 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     prompt = QA_MASTER_PROMPT.format(context=context, question=question)
     try:
         llm = ChatOpenAI(
-            model=settings.llm_model,
+            model="google/gemma-2-9b-it:free",
             api_key=settings.openrouter_api_key,
             base_url="https://openrouter.ai/api/v1",
         )
@@ -55,7 +55,7 @@ def direct_answer_node(state: Dict[str, Any]) -> Dict[str, Any]:
     question = state.get("question", "")
     try:
         llm = ChatOpenAI(
-            model=settings.llm_model,
+            model="google/gemma-2-9b-it:free",
             api_key=settings.openrouter_api_key,
             base_url="https://openrouter.ai/api/v1",
         )
