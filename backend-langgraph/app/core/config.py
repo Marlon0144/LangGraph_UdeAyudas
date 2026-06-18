@@ -8,8 +8,9 @@ class Settings(BaseSettings):
     openrouter_api_key: str
     llm_model: str = "meta-llama/llama-3-8b-instruct:free"
     
-    # Qdrant local path settings
-    qdrant_path: str = "./local_qdrant"
+    # Qdrant Cloud settings
+    qdrant_url: str = ""
+    qdrant_api_key: str = ""
     qdrant_collection_name: str = "institucional"
     
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")

@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, END
 from app.graph.state import AgentState
-from app.graph.nodes import route_question, retrieve, grade_documents, generate, direct_answer, fallback
+from app.graph.nodes import route_question_node, retrieve_node, grade_documents_node, generate_node, direct_answer_node, fallback_node
 
 """
 Enruta inicialmente la pregunta según si es administrativa o casual.
@@ -27,12 +27,12 @@ def decide_to_generate(state: AgentState) -> str:
 workflow = StateGraph(AgentState)
 
 # Añadir nodos
-workflow.add_node("route_question", route_question)
-workflow.add_node("retrieve", retrieve)
-workflow.add_node("grade_documents", grade_documents)
-workflow.add_node("generate", generate)
-workflow.add_node("direct_answer", direct_answer)
-workflow.add_node("fallback", fallback)
+workflow.add_node("route_question", route_question_node)
+workflow.add_node("retrieve", retrieve_node)
+workflow.add_node("grade_documents", grade_documents_node)
+workflow.add_node("generate", generate_node)
+workflow.add_node("direct_answer", direct_answer_node)
+workflow.add_node("fallback", fallback_node)
 
 # Definir aristas
 workflow.set_entry_point("route_question")
