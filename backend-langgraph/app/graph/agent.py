@@ -2,10 +2,10 @@ from langgraph.graph import StateGraph, END
 from app.graph.state import AgentState
 from app.graph.nodes import route_question, retrieve, grade_documents, generate, direct_answer, fallback
 
+"""
+Enruta inicialmente la pregunta según si es administrativa o casual.
+"""
 def route_initial(state: AgentState) -> str:
-    """
-    Enruta inicialmente la pregunta según si es administrativa o casual.
-    """
     print("---ROUTE INITIAL---")
     decision = state.get("router_decision", "ADMINISTRATIVA")
     if decision == "CASUAL":
@@ -13,10 +13,10 @@ def route_initial(state: AgentState) -> str:
     else:
         return "retrieve"
 
+"""
+Determina el siguiente nodo basándose en la relevancia de los documentos.
+"""
 def decide_to_generate(state: AgentState) -> str:
-    """
-    Determina el siguiente nodo basándose en la relevancia de los documentos.
-    """
     print("---DECIDE TO GENERATE---")
     if state.get("is_relevant"):
         return "generate"

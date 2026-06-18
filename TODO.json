@@ -94,5 +94,28 @@
         }
       ]
     }
-  ]
+  ],
+  {
+    "phase": 5,
+    "name": "Preparación para Despliegue (Render)",
+    "description": "Configurar el repositorio para deploy en Render como Web Service",
+    "tasks": [
+      {
+        "id": "5.1",
+        "description": "Configuración estricta de CORS: Restringir orígenes a localhost:4321 y dejar comentario para inyectar URL de producción de Netlify.",
+        "completed": true
+      },
+      {
+        "id": "5.2",
+        "description": "Actualización y congelamiento de dependencias: Pinear versiones exactas en requirements.txt con pip freeze.",
+        "completed": true
+      },
+      {
+        "id": "5.3",
+        "description": "Definición del comando de arranque público: uvicorn app.main:app --host 0.0.0.0 --port 8000",
+        "completed": true
+      }
+    ]
+  }
+]
 }

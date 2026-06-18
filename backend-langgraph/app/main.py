@@ -10,9 +10,11 @@ app = FastAPI(
 )
 
 # Configuración de CORS para permitir la comunicación con el frontend de Astro/Netlify
+# ⚠️  EN PRODUCCIÓN: Reemplazar "http://localhost:4321" por la URL real de Netlify (ej. "https://tudominio.netlify.app")
+# para proteger la API contra orígenes no autorizados.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción se debe cambiar al dominio del frontend
+    allow_origins=["http://localhost:4321"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
