@@ -7,10 +7,8 @@ from app.core.prompts import QA_MASTER_PROMPT
 def route_question_node(state: Dict[str, Any]) -> Dict[str, Any]:
     question = state.get("question", "")
     if "hola" in question.lower() or "buenos días" in question.lower():
-        state["router_decision"] = "CASUAL"
-    else:
-        state["router_decision"] = "ADMINISTRATIVA"
-    return state
+        return {"router_decision": "CASUAL"}
+    return {"router_decision": "ADMINISTRATIVA"}
 
 def retrieve_node(state: Dict[str, Any]) -> Dict[str, Any]:
     question = state.get("question", "")
@@ -27,16 +25,17 @@ Contenido:
 {doc.page_content}
 --- FIN DOCUMENTO ---"""
         context_blocks.append(context_block)
-    state["context"] = "\n\n".join(context_blocks)
-    return state
+    context_str = "\n\n".join(context_blocks)
+    print(f"[DEBUG retrieve_node] {len(context_blocks)} bloques, {len(context_str)} chars")
+    return {"context": context_str}
 
 def grade_documents_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    state["is_relevant"] = True
-    return state
+    return {"is_relevant": True}
 
 def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     question = state.get("question", "")
     context = state.get("context", "")
+    print(f"[DEBUG generate_node] context: {len(context)} chars")
     prompt = QA_MASTER_PROMPT.format(context=context, question=question)
     try:
         llm = ChatOpenAI(
@@ -45,11 +44,11 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
             base_url="https://openrouter.ai/api/v1",
         )
         response = llm.invoke(prompt)
-        state["generation"] = response.content
+        print(f"[DEBUG generate_node] respuesta OK: {len(response.content)} chars")
+        return {"generation": response.content}
     except Exception as e:
         print(f"[ERROR generate_node] Fallo al invocar el LLM: {e}")
-        state["generation"] = "Lo siento, ocurrió un error al generar la respuesta."
-    return state
+        return {"generation": "Lo siento, ocurrió un error al generar la respuesta."}
 
 def direct_answer_node(state: Dict[str, Any]) -> Dict[str, Any]:
     question = state.get("question", "")
@@ -61,12 +60,10 @@ def direct_answer_node(state: Dict[str, Any]) -> Dict[str, Any]:
         )
         prompt = f"Responde de forma amigable y breve al siguiente saludo: {question}"
         response = llm.invoke(prompt)
-        state["generation"] = response.content
+        return {"generation": response.content}
     except Exception as e:
         print(f"[ERROR direct_answer_node] Fallo al invocar el LLM: {e}")
-        state["generation"] = "¡Hola! Soy el asistente administrativo institucional. ¿En qué puedo ayudarte?"
-    return state
+        return {"generation": "¡Hola! Soy el asistente administrativo institucional. ¿En qué puedo ayudarte?"}
 
 def fallback_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    state["generation"] = "No encontré información relevante en los documentos institucionales para responder tu pregunta. Por favor, intenta reformularla o contacta a la oficina correspondiente."
-    return state
+    return {"generation": "No encontré información relevante en los documentos institucionales para responder tu pregunta. Por favor, intenta reformularla o contacta a la oficina correspondiente."}

@@ -17,7 +17,13 @@ class InvokeResponse(BaseModel):
 async def invoke_agent(request: InvokeRequest):
     try:
         # Invocamos el agente con el estado inicial
-        result = agent.invoke({"question": request.question})
+        result = agent.invoke({
+            "question": request.question,
+            "context": "",
+            "generation": "",
+            "is_relevant": False,
+            "router_decision": ""
+        })
         
         return InvokeResponse(
             generation=result.get("generation", ""),
