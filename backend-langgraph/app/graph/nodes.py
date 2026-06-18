@@ -1,13 +1,11 @@
 from typing import Any, Dict
+from langchain_openai import ChatOpenAI
 from app.rag.vectorstore import get_retriever
+from app.core.config import settings
+from app.core.prompts import QA_MASTER_PROMPT
 
 def route_question_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Nodo de enrutamiento inicial.
-    Define hacia dónde debe ir la pregunta inicialmente.
-    """
     question = state.get("question", "")
-    # Lógica básica para ejemplificar el ruteo
     if "hola" in question.lower() or "buenos días" in question.lower():
         state["router_decision"] = "CASUAL"
     else:
@@ -15,20 +13,11 @@ def route_question_node(state: Dict[str, Any]) -> Dict[str, Any]:
     return state
 
 def retrieve_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Nodo de recuperación (retrieve).
-    Obtiene los documentos de la base de datos vectorial y formatea el contexto
-    estrictamente según los metadatos y la estructura solicitada.
-    """
     question = state.get("question", "")
-    
     retriever = get_retriever()
     docs = retriever.invoke(question)
-    
     context_blocks = []
-    
     for doc in docs:
-        # Extrae la metadata e inyecta en el f-string con formato estricto
         context_block = f"""--- INICIO DOCUMENTO ---
 Fuente: {doc.metadata.get('source_pdf', 'Desconocida')}
 Norma: Acuerdo {doc.metadata.get('numero', 'N/A')} del {doc.metadata.get('fecha_expedicion', 'N/A')}
@@ -38,34 +27,46 @@ Contenido:
 {doc.page_content}
 --- FIN DOCUMENTO ---"""
         context_blocks.append(context_block)
-        
-    # Guarda este string final concatenado en state["context"]
     state["context"] = "\n\n".join(context_blocks)
-    
     return state
 
 def grade_documents_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Evalúa si los documentos recuperados son relevantes para la pregunta.
-    """
-    # Lógica dummy
     state["is_relevant"] = True
     return state
 
 def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Genera la respuesta usando el contexto recuperado.
-    """
+    question = state.get("question", "")
+    context = state.get("context", "")
+    prompt = QA_MASTER_PROMPT.format(context=context, question=question)
+    try:
+        llm = ChatOpenAI(
+            model=settings.llm_model,
+            api_key=settings.openrouter_api_key,
+            base_url="https://openrouter.ai/api/v1",
+        )
+        response = llm.invoke(prompt)
+        state["generation"] = response.content
+    except Exception as e:
+        print(f"[ERROR generate_node] Fallo al invocar el LLM: {e}")
+        state["generation"] = "Lo siento, ocurrió un error al generar la respuesta."
     return state
 
 def direct_answer_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Responde directamente a preguntas casuales.
-    """
+    question = state.get("question", "")
+    try:
+        llm = ChatOpenAI(
+            model=settings.llm_model,
+            api_key=settings.openrouter_api_key,
+            base_url="https://openrouter.ai/api/v1",
+        )
+        prompt = f"Responde de forma amigable y breve al siguiente saludo: {question}"
+        response = llm.invoke(prompt)
+        state["generation"] = response.content
+    except Exception as e:
+        print(f"[ERROR direct_answer_node] Fallo al invocar el LLM: {e}")
+        state["generation"] = "¡Hola! Soy el asistente administrativo institucional. ¿En qué puedo ayudarte?"
     return state
 
 def fallback_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Respuesta por defecto cuando no se encuentra información.
-    """
+    state["generation"] = "No encontré información relevante en los documentos institucionales para responder tu pregunta. Por favor, intenta reformularla o contacta a la oficina correspondiente."
     return state
